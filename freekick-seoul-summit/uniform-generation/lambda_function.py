@@ -80,7 +80,7 @@ def segment_clothes(image):
     sagemaker_runtime = boto3.client('sagemaker-runtime', config=my_config_northeast)
     
     response = sagemaker_runtime.invoke_endpoint(
-        EndpointName='huggingface-pytorch-inference-2024-04-19-04-38-18-545',
+        EndpointName='YOUR_ENDPOINT_NAME',
         ContentType='image/x-image',
         Body=image
     )
@@ -116,7 +116,7 @@ def lambda_handler(event, context):
     s3 = boto3.client('s3', config=my_config_northeast)
     dynamodb = boto3.resource('dynamodb', config=my_config_northeast)
     
-    table_name = 'free-kick-challenge-summitseoul24'
+    table_name = 'YOUR_TABLE_NAME'
     table = dynamodb.Table(table_name)
     
     response_table = table.query(
