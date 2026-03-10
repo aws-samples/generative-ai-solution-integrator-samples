@@ -1,11 +1,13 @@
-## My Project
+# Generative AI Solution Integrator Samples
 
-TODO: Fill this README out!
+A collection of sample projects demonstrating generative AI solutions built on AWS services. These projects showcase real-world applications of Amazon SageMaker, Amazon Bedrock, and partner AI services.
 
-Be sure to:
+## Projects
 
-* Change the title in this README
-* Edit your repository description on GitHub
+| Project | Description |
+|---------|-------------|
+| [Free Kick Challenge (Seoul Summit 2024)](freekick-seoul-summit/) | Interactive soccer free kick experience featuring AI-powered slow-motion replay, uniform generation, and live commentary |
+| [TwelveLabs A-to-Z Workshop](twelvelabs-a-to-z-workshop/) | Hands-on workshop for video understanding using TwelveLabs models on Amazon Bedrock |
 
 ## Security
 
@@ -13,5 +15,4 @@ See [CONTRIBUTING](CONTRIBUTING.md#security-issue-notifications) for more inform
 
 ## License
 
-This library is licensed under the MIT-0 License. See the LICENSE file.
-
+This library is licensed under the MIT-0 License. See the [LICENSE](LICENSE) file.

@@ -1,23 +1,39 @@
-## Prerequisites (OpenCV layer)
+# Uniform Generation
 
-1. You can refer to the OpenCV layer creation guide in the link below.
-https://github.com/awslabs/lambda-opencv
+Generates personalized soccer uniforms on player photos using clothes segmentation (SegFormer on SageMaker) and image inpainting (Amazon Titan Image Generator on Bedrock).
 
-2. If you find a pre-built OpenCV layer for a specific python version, you can refer to the link below.
-https://github.com/076923/aws-lambda-python-opencv-layer
+## How It Works
 
-## Source Code Description
+1. A player photo is uploaded to S3, triggering the Lambda function
+2. The image is sent to a SageMaker real-time endpoint running a SegFormer model for pixel-level clothes segmentation
+3. Upper-clothes and pants masks are extracted and combined into an inpainting mask
+4. The original image and mask are sent to Amazon Titan Image Generator (`amazon.titan-image-generator-v1`) with a prompt describing a soccer uniform in a randomly selected color
+5. The generated image is saved back to S3
 
-### clothes_segmentation_endpoint.ipynb
+## Project Structure
 
-The above file is an example of distributing a segformer model for classification using sagemaker. The sagemaker endpoint performs real-time inference. The segformer model generates a mask image that fits the previously specified label through pixel-level segmentation from the input image.
+```
+uniform-generation/
+├── clothes_segmentation_endpoint.ipynb  # Notebook for deploying SegFormer on SageMaker
+└── lambda_function.py                   # Lambda handler for the generation pipeline
+```
 
-### lambda_function.py
+## Prerequisites
 
-The above file is a combination of the input image obtained through the camera and the mask image inferred through the Seformer model, and performs image inpainting through the Amazon Titan image generator.
-By entering the two images and a prompt to create a soccer uniform, the area designated as a mask is converted into a soccer uniform that matches the set prompt, and the image is stored in amazon S3.
+- **SageMaker Endpoint**: Deploy the SegFormer model using `clothes_segmentation_endpoint.ipynb`
+- **Amazon Bedrock**: Enable access to Amazon Titan Image Generator in `us-west-2`
+- **OpenCV Lambda Layer**: Required for image processing in Lambda
+  - Build guide: [awslabs/lambda-opencv](https://github.com/awslabs/lambda-opencv)
+  - Pre-built layers: [076923/aws-lambda-python-opencv-layer](https://github.com/076923/aws-lambda-python-opencv-layer)
 
-To use Lambda code, you must add the sagemaker endpoint name specified as 'YOUR_ENDPOINT_NAME' and 'YOUR_TABLE_NAME' must specify the name of the table where your information is stored.
+## Configuration
 
-The Lambda function in the source code uses settings related to ap-northeast-2 region, and uses us-west-2 region with additional configuration variables set for bedrock use.
+Update the following placeholders in `lambda_function.py` before deployment:
 
+- `YOUR_ENDPOINT_NAME` - Name of the deployed SageMaker SegFormer endpoint
+- `YOUR_TABLE_NAME` - DynamoDB table name for player information
+
+## Region Configuration
+
+- SageMaker endpoint and DynamoDB: `ap-northeast-2` (Seoul)
+- Amazon Bedrock (Titan Image Generator): `us-west-2` (Oregon)
